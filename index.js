@@ -3340,15 +3340,4 @@ app.get('/logout', (req, res) => {
    JALANKAN SERVER
 ========================================================= */
 
-app.listen(
-  port,
-  '0.0.0.0',
-  () => {
-
-    console.log(
-      'JURNAL DE PAVILJOEN: http://localhost:' +
-      port
-    );
-
-  }
-);
+module.exports = app;
