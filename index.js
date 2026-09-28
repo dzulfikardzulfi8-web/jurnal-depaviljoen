@@ -2,14 +2,25 @@ const express = require('express');
 const session = require('express-session');
 const multer = require('multer');
 const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const PDFDocument = require('pdfkit');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const db = new sqlite3.Database('jurnal.db');
+const fs = require('fs');
+const path = require('path');
+const dbPath = process.env.VERCEL ? '/tmp/jurnal.db' : 'jurnal.db';
 
+// kalau di Vercel, copy db awal ke /tmp biar gak read-only error
+if (process.env.VERCEL) {
+  try {
+    if (!fs.existsSync('/tmp/jurnal.db') && fs.existsSync(path.join(__dirname, 'jurnal.db'))) {
+      fs.copyFileSync(path.join(__dirname, 'jurnal.db'), '/tmp/jurnal.db');
+    }
+  } catch(e){}
+}
+const db = new sqlite3.Database(dbPath);
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
